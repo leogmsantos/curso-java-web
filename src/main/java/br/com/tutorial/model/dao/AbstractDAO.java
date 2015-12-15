@@ -78,7 +78,7 @@ public abstract class AbstractDAO<T extends BaseEntity, PK extends Serializable>
 		em.persist(entity);
 		em.getTransaction().commit();
 	}
-
+	
 	protected T atualizar(T entity) {
 		em.getTransaction().begin();
 		em.merge(entity);

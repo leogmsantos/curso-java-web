@@ -1,6 +1,10 @@
 package br.com.tutorial.model.entity;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,11 +37,24 @@ public class Usuario extends BaseEntity implements Serializable {
 	private String repetirEmail;
 
 	@NotBlank
-	@Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})", 
-	message = "A senha deve conter entre 6 e 20 caracteres, sendo letras minusculas e maiusculas, números e caracteres especiais @#$%")
+	//@Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})", 
+	//message = "A senha deve conter entre 6 e 20 caracteres, sendo letras minusculas e maiusculas, números e caracteres especiais @#$%")
 	@Column(name = "senha")
 	private String senha;
-
+	
+	public String senhaToMD5(String senha) throws UnsupportedEncodingException, NoSuchAlgorithmException{
+		MessageDigest m = MessageDigest.getInstance("MD5");
+		m.reset();
+		m.update(senha.getBytes());
+		byte[] digest = m.digest();
+		BigInteger bigInt = new BigInteger(1,digest);
+		String hashtext = bigInt.toString(16);
+		while(hashtext.length() < 32 ){
+		  hashtext = "0"+hashtext;
+		}
+		return hashtext;
+	}
+	
 	@Transient
 	private String repetirSenha;
 
@@ -69,10 +86,12 @@ public class Usuario extends BaseEntity implements Serializable {
 		return senha;
 	}
 
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setSenha(String senha) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+			senha = senhaToMD5(senha);
+			this.senha = senha;
+			System.out.println(senha);	
 	}
-
+	
 	public String getRepetirSenha() {
 		return repetirSenha;
 	}
@@ -96,5 +115,5 @@ public class Usuario extends BaseEntity implements Serializable {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-
+	
 }

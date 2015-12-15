@@ -25,7 +25,7 @@ public class ExemploDeUso implements Serializable {
 	
 	@NotBlank
 	@Size(min=6, max=20)
-	@Pattern(regexp= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})")
+	//@Pattern(regexp= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})")
 	private String senha;
 	
 	private String confirmarSenha;
